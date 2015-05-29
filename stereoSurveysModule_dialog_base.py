@@ -1,0 +1,157 @@
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file '/home/enrico/Dropbox/dev/stereoSurveys/stereoSurveysModule_dialog_base.ui'
+#
+# Created: Sat May 30 01:08:27 2015
+#      by: PyQt4 UI code generator 4.10.4
+#
+# WARNING! All changes made in this file will be lost!
+
+from PyQt4 import QtCore, QtGui
+
+try:
+    _fromUtf8 = QtCore.QString.fromUtf8
+except AttributeError:
+    def _fromUtf8(s):
+        return s
+
+try:
+    _encoding = QtGui.QApplication.UnicodeUTF8
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+except AttributeError:
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig)
+
+class Ui_stereoSurveysDialogBase(object):
+    def setupUi(self, stereoSurveysDialogBase):
+        stereoSurveysDialogBase.setObjectName(_fromUtf8("stereoSurveysDialogBase"))
+        stereoSurveysDialogBase.resize(1108, 308)
+        self.verticalLayout_5 = QtGui.QVBoxLayout(stereoSurveysDialogBase)
+        self.verticalLayout_5.setObjectName(_fromUtf8("verticalLayout_5"))
+        self.horizontalLayout = QtGui.QHBoxLayout()
+        self.horizontalLayout.setSpacing(2)
+        self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
+        spacerItem = QtGui.QSpacerItem(0, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(spacerItem)
+        self.pushButtonSx = QtGui.QPushButton(stereoSurveysDialogBase)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.pushButtonSx.sizePolicy().hasHeightForWidth())
+        self.pushButtonSx.setSizePolicy(sizePolicy)
+        self.pushButtonSx.setMinimumSize(QtCore.QSize(30, 30))
+        self.pushButtonSx.setMaximumSize(QtCore.QSize(30, 30))
+        self.pushButtonSx.setObjectName(_fromUtf8("pushButtonSx"))
+        self.horizontalLayout.addWidget(self.pushButtonSx)
+        self.verticalLayout_2 = QtGui.QVBoxLayout()
+        self.verticalLayout_2.setSpacing(0)
+        self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
+        self.webViewSx = QtWebKit.QWebView(stereoSurveysDialogBase)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.webViewSx.sizePolicy().hasHeightForWidth())
+        self.webViewSx.setSizePolicy(sizePolicy)
+        self.webViewSx.setMinimumSize(QtCore.QSize(400, 250))
+        self.webViewSx.setMaximumSize(QtCore.QSize(400, 250))
+        self.webViewSx.setUrl(QtCore.QUrl(_fromUtf8("about:blank")))
+        self.webViewSx.setObjectName(_fromUtf8("webViewSx"))
+        self.verticalLayout_2.addWidget(self.webViewSx)
+        self.horizontalLayout.addLayout(self.verticalLayout_2)
+        self.verticalLayout = QtGui.QVBoxLayout()
+        self.verticalLayout.setSpacing(0)
+        self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
+        self.webViewPlan = QtWebKit.QWebView(stereoSurveysDialogBase)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.webViewPlan.sizePolicy().hasHeightForWidth())
+        self.webViewPlan.setSizePolicy(sizePolicy)
+        self.webViewPlan.setMinimumSize(QtCore.QSize(150, 150))
+        self.webViewPlan.setMaximumSize(QtCore.QSize(150, 150))
+        self.webViewPlan.setUrl(QtCore.QUrl(_fromUtf8("about:blank")))
+        self.webViewPlan.setObjectName(_fromUtf8("webViewPlan"))
+        self.verticalLayout.addWidget(self.webViewPlan)
+        self.correzione = QtGui.QLineEdit(stereoSurveysDialogBase)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.correzione.sizePolicy().hasHeightForWidth())
+        self.correzione.setSizePolicy(sizePolicy)
+        self.correzione.setMinimumSize(QtCore.QSize(150, 0))
+        self.correzione.setMaximumSize(QtCore.QSize(150, 16777215))
+        self.correzione.setInputMethodHints(QtCore.Qt.ImhFormattedNumbersOnly)
+        self.correzione.setObjectName(_fromUtf8("correzione"))
+        self.verticalLayout.addWidget(self.correzione)
+        self.labelLon = QtGui.QLabel(stereoSurveysDialogBase)
+        self.labelLon.setObjectName(_fromUtf8("labelLon"))
+        self.verticalLayout.addWidget(self.labelLon)
+        self.labelLat = QtGui.QLabel(stereoSurveysDialogBase)
+        self.labelLat.setObjectName(_fromUtf8("labelLat"))
+        self.verticalLayout.addWidget(self.labelLat)
+        self.labelX = QtGui.QLabel(stereoSurveysDialogBase)
+        self.labelX.setObjectName(_fromUtf8("labelX"))
+        self.verticalLayout.addWidget(self.labelX)
+        self.labelY = QtGui.QLabel(stereoSurveysDialogBase)
+        self.labelY.setObjectName(_fromUtf8("labelY"))
+        self.verticalLayout.addWidget(self.labelY)
+        self.pushButton = QtGui.QPushButton(stereoSurveysDialogBase)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.pushButton.sizePolicy().hasHeightForWidth())
+        self.pushButton.setSizePolicy(sizePolicy)
+        self.pushButton.setMinimumSize(QtCore.QSize(150, 0))
+        self.pushButton.setMaximumSize(QtCore.QSize(150, 16777215))
+        self.pushButton.setObjectName(_fromUtf8("pushButton"))
+        self.verticalLayout.addWidget(self.pushButton)
+        spacerItem1 = QtGui.QSpacerItem(0, 0, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.verticalLayout.addItem(spacerItem1)
+        self.horizontalLayout.addLayout(self.verticalLayout)
+        self.verticalLayout_4 = QtGui.QVBoxLayout()
+        self.verticalLayout_4.setSpacing(0)
+        self.verticalLayout_4.setObjectName(_fromUtf8("verticalLayout_4"))
+        self.webViewDx = QtWebKit.QWebView(stereoSurveysDialogBase)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.webViewDx.sizePolicy().hasHeightForWidth())
+        self.webViewDx.setSizePolicy(sizePolicy)
+        self.webViewDx.setMinimumSize(QtCore.QSize(400, 250))
+        self.webViewDx.setMaximumSize(QtCore.QSize(400, 250))
+        self.webViewDx.setUrl(QtCore.QUrl(_fromUtf8("about:blank")))
+        self.webViewDx.setObjectName(_fromUtf8("webViewDx"))
+        self.verticalLayout_4.addWidget(self.webViewDx)
+        self.horizontalLayout.addLayout(self.verticalLayout_4)
+        self.pushButtonDx = QtGui.QPushButton(stereoSurveysDialogBase)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.pushButtonDx.sizePolicy().hasHeightForWidth())
+        self.pushButtonDx.setSizePolicy(sizePolicy)
+        self.pushButtonDx.setMinimumSize(QtCore.QSize(30, 30))
+        self.pushButtonDx.setMaximumSize(QtCore.QSize(30, 30))
+        self.pushButtonDx.setObjectName(_fromUtf8("pushButtonDx"))
+        self.horizontalLayout.addWidget(self.pushButtonDx)
+        spacerItem2 = QtGui.QSpacerItem(0, 0, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(spacerItem2)
+        self.verticalLayout_5.addLayout(self.horizontalLayout)
+        spacerItem3 = QtGui.QSpacerItem(0, 0, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.verticalLayout_5.addItem(spacerItem3)
+
+        self.retranslateUi(stereoSurveysDialogBase)
+        QtCore.QMetaObject.connectSlotsByName(stereoSurveysDialogBase)
+
+    def retranslateUi(self, stereoSurveysDialogBase):
+        stereoSurveysDialogBase.setWindowTitle(_translate("stereoSurveysDialogBase", "visual surveys", None))
+        self.pushButtonSx.setText(_translate("stereoSurveysDialogBase", "+", None))
+        self.correzione.setText(_translate("stereoSurveysDialogBase", "0", None))
+        self.labelLon.setText(_translate("stereoSurveysDialogBase", "lon", None))
+        self.labelLat.setText(_translate("stereoSurveysDialogBase", "lat", None))
+        self.labelX.setText(_translate("stereoSurveysDialogBase", "X", None))
+        self.labelY.setText(_translate("stereoSurveysDialogBase", "Y", None))
+        self.pushButton.setText(_translate("stereoSurveysDialogBase", "Insert on map", None))
+        self.pushButtonDx.setText(_translate("stereoSurveysDialogBase", "+", None))
+
+from PyQt4 import QtWebKit
