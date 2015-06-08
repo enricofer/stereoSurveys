@@ -206,11 +206,27 @@ class stereoSurveys(QgsMapTool):
         #js = "this.setMapCenter(%s, %s);" % (45.3995002217,11.8760747755)
         #self.defaults()
         #self.centerControlMap(QgsPoint(11.8760747755,45.3995002217))
-        feat = QgsFeature()
-        geom = QgsGeometry.fromPoint(self.intersectionPoint)
-        feat.setGeometry(geom)
-        #feat.setAttributes([99])
-        self.surveyLayer.dataProvider().addFeatures([feat])
+        surveyLayer = self.iface.legendInterface().currentLayer()
+        if surveyLayer.isValid() and surveyLayer.type() == QgsMapLayer.VectorLayer:
+            if surveyLayer.geometryType() == QGis.Point:
+                if surveyLayer.isEditable():
+                    feat = QgsFeature()
+                    geom = QgsGeometry.fromPoint(self.transformToLayerSRS(surveyLayer,self.intersectionPoint))
+                    feat.setGeometry(geom)
+                    #feat.setAttributes([99])
+                    surveyLayer.addFeatures([feat])
+                    s = QSettings()
+                    attmode = s.value("Qgis/digitizing/disable_enter_attribute_values_dialog", "" )
+                    if attmode == 'false':
+                        self.iface.openFeatureForm(surveyLayer,feat,True)
+                    self.iface.mapCanvas().refresh()
+                    surveyLayer.setSelectedFeatures([])
+                else:
+                    self.iface.messageBar().pushMessage("Warning", "Current layer is not editable", level=QgsMessageBar.WARNING , duration=3)
+            else:
+                self.iface.messageBar().pushMessage("Warning", "Point layer needed to digitize position", level=QgsMessageBar.WARNING , duration=3)
+        else:
+            self.iface.messageBar().pushMessage("Warning", "Invalid current layer", level=QgsMessageBar.WARNING , duration=3)
 
     def centerControlMap(self,loc,zoom = 20):
         js = "this.mapClient.panTo(new google.maps.LatLng(%s, %s));" % (loc.y(),loc.x())
@@ -228,6 +244,10 @@ class stereoSurveys(QgsMapTool):
             if tmpLoc["transport"] == "view":
                 self.actualLocSx = tmpLoc
                 self.actualPointSx = self.transformToCurrentSRS(QgsPoint(float(self.actualLocSx['lon']),float(self.actualLocSx['lat'])))
+                self.wdg.labelLatSx.setText(str(self.actualLocSx['lat']))
+                self.wdg.labelLonSx.setText(str(self.actualLocSx['lon']))
+                self.wdg.labelHeadingSx.setText(str(self.actualLocSx['heading']))
+                self.wdg.labelPhotoHeadingSx.setText(str(self.actualLocSx['photoHeading']))
                 #self.actualPointSx = QgsPoint(float(self.actualLocSx['lon']),float(self.actualLocSx['lat']))
                 self.updateIntersection()
                 #print status
@@ -243,6 +263,10 @@ class stereoSurveys(QgsMapTool):
             if tmpLoc["transport"] == "view":
                 self.actualLocDx = tmpLoc
                 self.actualPointDx = self.transformToCurrentSRS(QgsPoint(float(self.actualLocDx['lon']),float(self.actualLocDx['lat'])))
+                self.wdg.labelLatDx.setText(str(self.actualLocDx['lat']))
+                self.wdg.labelLonDx.setText(str(self.actualLocDx['lon']))
+                self.wdg.labelHeadingDx.setText(str(self.actualLocDx['heading']))
+                self.wdg.labelPhotoHeadingDx.setText(str(self.actualLocSx['photoHeading']))
                 #self.actualPointDx = QgsPoint(float(self.actualLocDx['lon']),float(self.actualLocDx['lat']))
                 self.updateIntersection()
                 #print status
@@ -317,6 +341,12 @@ class stereoSurveys(QgsMapTool):
         xform = QgsCoordinateTransform(crsSrc, crsDest)
         return xform.transform(pPoint) # forward transformation: src -> dest
 
+    def transformToLayerSRS(self,layer, pPoint):
+        # transformation from project SRS the provided layer SRS
+        crsDest = layer.crs() # get layer crs
+        crsSrc = iface.mapCanvas().mapRenderer().destinationCrs()  # project srs
+        xform = QgsCoordinateTransform(crsSrc, crsDest)
+        return xform.transform(pPoint) # forward transformation: src -> dest
 
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
@@ -333,7 +363,6 @@ class stereoSurveys(QgsMapTool):
             self.positionInt.reset()
         except:
             pass
-        QgsMapLayerRegistry.instance().removeMapLayer(self.surveyLayer.id())
 
     def defaults(self):
         swUrlSx = "qrc:///plugins/stereoSurveys/lib/sv.html?lat=45.3993885731&long=11.875303141&width=400&height=250&heading=131"
@@ -388,21 +417,22 @@ class stereoSurveys(QgsMapTool):
             else:
                 self.heading = 360 - (180 + result)
 
-        self.heading = math.trunc(self.heading)
+        self.wdg.pushButtonSx.setDown(False)
+        self.wdg.pushButtonSx.setDown(False)
+
+        #self.heading = math.trunc(self.heading)
         if self.target == "dx":
             self.viewWidth = self.dlg.webViewDx.width()
             self.viewHeight = self.dlg.webViewDx.height()
             self.gswUrl = "qrc:///plugins/stereoSurveys/lib/sv.html?lat="+str(self.pointWgs84.y())+"&long="+str(self.pointWgs84.x())+"&width="+str(self.viewWidth)+"&height="+str(self.viewHeight)+"&heading="+str(self.heading)
-            print self.gswUrl
+            print "dx",self.gswUrl
             self.wdg.webViewDx.load(QUrl(self.gswUrl))
-            self.wdg.pushButtonDx.setDown(False)
         if self.target == "sx":
             self.viewWidth = self.dlg.webViewSx.width()
             self.viewHeight = self.dlg.webViewSx.height()
             self.gswUrl = "qrc:///plugins/stereoSurveys/lib/sv.html?lat="+str(self.pointWgs84.y())+"&long="+str(self.pointWgs84.x())+"&width="+str(self.viewWidth)+"&height="+str(self.viewHeight)+"&heading="+str(self.heading)
-            print self.gswUrl
+            print "sx",self.gswUrl
             self.wdg.webViewSx.load(QUrl(self.gswUrl))
-            self.wdg.pushButtonSx.setDown(False)
 
     def setViewDx(self):
         gsvMessage="Click on map and drag the cursor to the desired direction to display Google Street View in right panel"
@@ -424,5 +454,5 @@ class stereoSurveys(QgsMapTool):
             self.apdockwidget.hide()
         else:
             self.apdockwidget.show()
-            self.surveyLayer = QgsVectorLayer("Point?crs="+self.iface.mapCanvas().mapRenderer().destinationCrs().toWkt(), "SurveyLayer", "memory")
-            QgsMapLayerRegistry.instance().addMapLayer(self.surveyLayer)
+            #self.surveyLayer = QgsVectorLayer("Point?crs="+self.iface.mapCanvas().mapRenderer().destinationCrs().toWkt(), "SurveyLayer", "memory")
+            #QgsMapLayerRegistry.instance().addMapLayer(self.surveyLayer)

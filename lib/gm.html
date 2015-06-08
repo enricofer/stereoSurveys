@@ -20,6 +20,8 @@
 #leggiFile {display:none;}
 #btnLoad {display:none;}
 #pov {display:none;}
+
+
 */
 
 var lat_param = gup('lat');
@@ -31,6 +33,7 @@ var result = "null";
 var mapClient;
 var panoMap;
 var overlay;
+var centerCross;
 
 mapOverlay.prototype = new google.maps.OverlayView();
 
@@ -48,6 +51,7 @@ function writeParam()
       };
       window.status = JSON.stringify(viewPar);
       document.getElementById("mapParam").innerHTML = JSON.stringify(viewPar) + '';
+      centerCross.setPosition(mapClient.getCenter());
       google.maps.event.trigger(mapClient,'resize')
 }
 
@@ -155,14 +159,30 @@ function initialize() {
        mapDiv.style.height = height_param + 'px';
    }
    mapClient = new google.maps.Map(mapDiv,mapOptions);
-   overlay = new mapOverlay(mapClient);
-  
-
-  google.maps.event.addListener(mapClient, 'zoom_changed', function() {
-      writeParam();
+   //overlay = new mapOverlay(mapClient);
+   
+   var centerCrossIcon = {url : 'crossMarker.png',
+   size: new google.maps.Size(20, 20),
+  anchor:  new google.maps.Point(10,10)};
+   
+   centerCross = new google.maps.Marker({
+      position: queryloc,
+      map: mapClient,
+      icon: centerCrossIcon
   });
 
-  google.maps.event.addListener(mapClient, 'drag', function() {
+  
+  //    
+
+//  google.maps.event.addListener(mapClient, 'zoom_changed', function() {
+//      writeParam();
+//  });
+
+//  google.maps.event.addListener(mapClient, 'drag', function() {
+//      writeParam()
+//  });
+
+  google.maps.event.addListener(mapClient, 'idle', function() {
       writeParam()
   });
   
