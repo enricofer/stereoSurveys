@@ -26,7 +26,7 @@ var lat_param = gup('lat');
 var long_param = gup('long');
 var width_param = gup('width'); 
 var height_param = gup('height');
-var heading_param = parseInt(gup('heading'));
+var heading_param = parseFloat(gup('heading'));
 var z_param = gup('zoom');
 var result = "null";
 var panoClient;
@@ -44,7 +44,9 @@ function writeParam()
       "pitch":panoClient.getPov().pitch,
       "zoom":panoClient.getPov().zoom,
       "lat":panoClient.getPosition().lat(),
-      "lon":panoClient.getPosition().lng()
+      "lon":panoClient.getPosition().lng(),
+      "photoHeading":panoClient.getPhotographerPov().heading,
+      "panoId":panoClient.getPano()
       };
       window.status = JSON.stringify(viewPar);
       document.getElementById("pov").innerHTML = JSON.stringify(viewPar) + '';
