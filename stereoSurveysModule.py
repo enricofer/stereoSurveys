@@ -195,7 +195,8 @@ class stereoSurveys(QgsMapTool):
         self.wdg.pushButton.clicked.connect(self.test)
         self.wdg.webViewSx.page().statusBarMessage.connect(self.catchJSeventsSx)
         self.wdg.webViewDx.page().statusBarMessage.connect(self.catchJSeventsDx)
-        self.wdg.correzione.textEdited.connect(self.correggi)
+        self.wdg.correzioneSx.textEdited.connect(self.correggi)
+        self.wdg.correzioneDx.textEdited.connect(self.correggi)
         self.wdg.pushButtonDx.clicked.connect(self.setViewDx)
         self.wdg.pushButtonSx.clicked.connect(self.setViewSx)
 
@@ -273,13 +274,17 @@ class stereoSurveys(QgsMapTool):
                 #self.setPosition()
 
     def correggi(self,txt):
-        self.updateIntersection()
+        try:
+            self.updateIntersection()
+        except:
+            self.iface.messageBar().pushMessage("Warning", "Numeric correction required", level=QgsMessageBar.WARNING , duration=1)
 
     def updateIntersection(self):
         if self.actualPointDx and self.actualPointSx:
-            corr = float (self.wdg.correzione.text())
-            k1 = math.tan(math.radians(90-self.actualLocSx["heading"]+corr))
-            k2 = math.tan(math.radians(90-self.actualLocDx["heading"]+corr))
+            corrSx = float (self.wdg.correzioneSx.text())
+            corrDx = float (self.wdg.correzioneDx.text())
+            k1 = math.tan(math.radians(90-self.actualLocSx["heading"]+corrSx))
+            k2 = math.tan(math.radians(90-self.actualLocDx["heading"]+corrDx))
             m1 = self.actualPointSx.y() - self.actualPointSx.x()*k1
             m2 = self.actualPointDx.y() - self.actualPointDx.x()*k2
             self.xInt = (m2-m1)/(k1-k2)
