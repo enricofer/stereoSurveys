@@ -271,7 +271,6 @@ class stereoSurveys(QgsMapTool):
                 self.wdg.labelPhotoHeadingSx.setText(str(self.actualLocSx['photoHeading']))
                 #self.actualPointSx = QgsPoint(float(self.actualLocSx['lon']),float(self.actualLocSx['lat']))
                 self.updateIntersection()
-                print "&&",self.intersectionPoint
                 self.wdg.labelPitchSx.setText(str(self.actualLocSx['pitch']))
                 distSx = math.sqrt(self.actualPointSx.sqrDist(self.intersectionPoint))
                 heightSx = (math.tan( math.radians(self.actualLocSx['pitch']))*distSx)+float(self.wdg.googleCameraHeightSx.text())
@@ -406,6 +405,22 @@ class stereoSurveys(QgsMapTool):
             #self.centerControlMap(self.actualLocSx,self.actualLocDx)
             self.centerControlMap(self.intersectionLoc)
             self.centerMapCanvasLocations()
+            #calc heights
+            #SX
+            self.wdg.labelPitchSx.setText(str(self.actualLocSx['pitch']))
+            distSx = math.sqrt(self.actualPointSx.sqrDist(self.intersectionPoint))
+            heightSx = (math.tan( math.radians(self.actualLocSx['pitch']))*distSx)+float(self.wdg.googleCameraHeightSx.text())
+            self.wdg.labelDistSx.setText(str(distSx))
+            self.wdg.labelHeightSx.setText(str(heightSx))
+            #DX
+            self.wdg.labelPitchDx.setText(str(self.actualLocDx['pitch']))
+            distDx = math.sqrt(self.actualPointDx.sqrDist(self.intersectionPoint))
+            heightDx = (math.tan( math.radians(self.actualLocDx['pitch']))*distDx)+float(self.wdg.googleCameraHeightDx.text())
+            self.wdg.labelDistDx.setText(str(distDx))
+            self.wdg.labelHeightDx.setText(str(heightDx))
+            #CX
+            self.wdg.labelMeanHeight.setText(str((heightDx+heightSx)/2))
+            self.wdg.labelMeanHeightError.setText(str(abs(heightDx-heightSx)/2))
 
     def centerMapCanvasLocations(self):
         print "centerLoc"
@@ -477,8 +492,8 @@ class stereoSurveys(QgsMapTool):
             pass
 
     def defaults(self):
-        swUrlSx = "qrc:///plugins/stereoSurveys/lib/sv.html?lat=45.3993885731&long=11.875303141&width=400&height=250&heading=131"
-        swUrlDx = "qrc:///plugins/stereoSurveys/lib/sv.html?lat=45.399895797&long=11.8765856845&width=400&height=250&heading=194"
+        swUrlSx = "qrc:///plugins/stereoSurveys/lib/sv.html?lat=45.3993885731&long=11.875303141&width=400&height=260&heading=131"
+        swUrlDx = "qrc:///plugins/stereoSurveys/lib/sv.html?lat=45.399895797&long=11.8765856845&width=400&height=260&heading=194"
         mapPlanUrl = "qrc:///plugins/stereoSurveys/lib/gm.html?width=150&height=150&zoom=20"
         self.wdg.webViewSx.load(QUrl(swUrlSx))
         self.wdg.webViewDx.load(QUrl(swUrlDx))
@@ -530,9 +545,6 @@ class stereoSurveys(QgsMapTool):
                 self.heading =  180 - result
             else:
                 self.heading = 360 - (180 + result)
-        print ">",self.heading
-        print ">>",self.getTrueHeading(self.PressedPoint,self.releasedPoint)
-        print ">>>",self.getTrueHeading(self.releasedPoint,self.PressedPoint)
         self.wdg.pushButtonSx.setDown(False)
         self.wdg.pushButtonSx.setDown(False)
 
