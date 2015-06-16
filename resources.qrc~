@@ -1,7 +1,0 @@
-<RCC>
-    <qresource prefix="/plugins/visualSurveys" >
-        <file>lib/sv.html</file>
-        <file>lib/gm.html</file>
-        <file>icon.png</file>
-    </qresource>
-</RCC>

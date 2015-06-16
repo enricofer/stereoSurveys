@@ -4,6 +4,11 @@
         <file>lib/gm.html</file>
         <file>lib/cross.png</file>
         <file>lib/crossMarker.png</file>
+        <file>lib/crossMarkerY.png</file>
+        <file>lib/crossMarkerY_calc.png</file>
+        <file>lib/crossMarkerY_calibrated.png</file>
+        <file>lib/crossMarkerG.png</file>
+        <file>lib/crossMarkerR.png</file>
         <file>lib/pplane.png</file>
         <file>lib/viewpoint.png</file>
         <file>lib/viewpointSx.png</file>

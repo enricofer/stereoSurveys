@@ -22,6 +22,7 @@
 #pov {display:none;}
 
 
+
 */
 
 var lat_param = gup('lat');
@@ -34,27 +35,82 @@ var mapClient;
 var panoMap;
 var overlay;
 var centerCross;
+var calibrationCross;
+var centerCrossYellowIcon;
+var centerCrossYellowIconCalibrated;
+var centerCrossYellowIconCalculated;
+var sxCross;
+var dxCross;
+var calculatedLoc;
+var calibratedLoc;
+var calibrated = false;
+var newPositionEvent;
+
+var centerCrossYellowIcon = {url : 'crossMarkerY.png',
+   size: new google.maps.Size(20, 20),
+  anchor:  new google.maps.Point(10,10)};
+   
+var centerCrossYellowIconCalibrated = {url : 'crossMarkerY_calibrated.png',
+   size: new google.maps.Size(20, 20),
+  anchor:  new google.maps.Point(10,10)};
+   
+var centerCrossYellowIconCalculated = {url : 'crossMarkerY_calc.png',
+   size: new google.maps.Size(20, 20),
+  anchor:  new google.maps.Point(10,10)};
+   
+var centerCrossGreenIcon = {url : 'crossMarkerG.png',
+   size: new google.maps.Size(20, 20),
+  anchor:  new google.maps.Point(10,10)};
+   
+var centerCrossRedIcon = {url : 'crossMarkerR.png',
+   size: new google.maps.Size(20, 20),
+  anchor:  new google.maps.Point(10,10)};
 
 mapOverlay.prototype = new google.maps.OverlayView();
 
 function setMapCenter(lon,lat){
-    mapClient.setCenter(new google.maps.LatLng(lon,lat));
+    calibrated = false;
+    calibratedCross.setPosition(new google.maps.LatLng(0,0));
+    calculatedCross.setPosition(new google.maps.LatLng(0,0));
+    setCalculatedIntersection(lon,lat);
+}
+
+function setCalculatedIntersection(lon,lat){
+	calculatedLoc = new google.maps.LatLng(lon,lat);
+	centerCross.setPosition(calculatedLoc);
+	mapClient.setCenter(calculatedLoc);
 }
 
 function writeParam()
 {
+          var viewPar = {
+          "transport":"mapview",
+          "zoom":mapClient.getZoom(),
+          "lat":mapClient.getCenter().lat(),
+          "lon":mapClient.getCenter().lng()
+          };
+          window.status = JSON.stringify(viewPar);
+          document.getElementById("mapParam").innerHTML = JSON.stringify(viewPar) + '';
+          centerCross.setPosition(calculatedLoc);
+          google.maps.event.trigger(mapClient,'resize')
+}
+
+
+function acquireCalibration(){
+      
+        calibratedLoc = centerCross.getPosition();
+        calibratedCross.setPosition(calibratedLoc);
+        calculatedCross.setPosition(calculatedLoc);
+        calibrated = true
+      
       var viewPar = {
-      "transport":"mapview",
-      "zoom":mapClient.getZoom(),
-      "lat":mapClient.getCenter().lat(),
-      "lon":mapClient.getCenter().lng()
+      "transport":"calibration",
+      "lat":calibratedLoc.lat(),
+      "lon":calibratedLoc.lng()
       };
       window.status = JSON.stringify(viewPar);
       document.getElementById("mapParam").innerHTML = JSON.stringify(viewPar) + '';
-      centerCross.setPosition(mapClient.getCenter());
-      google.maps.event.trigger(mapClient,'resize')
 }
-
 
 function mapOverlay (gmap) {
     this.map_ = gmap;
@@ -143,7 +199,7 @@ function initialize() {
     zoom: zoom_param,
     center: queryloc,
     disableDefaultUI: true,
-    draggable: false,
+    draggable: true,
     tilt:0
     }
    
@@ -161,14 +217,39 @@ function initialize() {
    mapClient = new google.maps.Map(mapDiv,mapOptions);
    //overlay = new mapOverlay(mapClient);
    
-   var centerCrossIcon = {url : 'crossMarker.png',
-   size: new google.maps.Size(20, 20),
-  anchor:  new google.maps.Point(10,10)};
-   
    centerCross = new google.maps.Marker({
-      position: queryloc,
       map: mapClient,
-      icon: centerCrossIcon
+      draggable:true,
+      icon: centerCrossYellowIcon
+  });
+   
+   google.maps.event.addListener(centerCross, 'dragend', function(){
+        acquireCalibration();
+    });
+   
+   calibratedCross = new google.maps.Marker({
+      map: mapClient,
+      icon: centerCrossYellowIconCalibrated
+  });
+   
+   calculatedCross = new google.maps.Marker({
+      map: mapClient,
+      draggable:true,
+      icon: centerCrossYellowIconCalculated
+  });
+   
+   google.maps.event.addListener(calibratedCross, 'dragend', function(){
+        acquireCalibration();
+    });
+   
+   sxCross = new google.maps.Marker({
+      map: mapClient,
+      icon: centerCrossGreenIcon
+  });
+   
+   dxCross = new google.maps.Marker({
+      map: mapClient,
+      icon: centerCrossRedIcon
   });
 
   
@@ -182,9 +263,9 @@ function initialize() {
 //      writeParam()
 //  });
 
-  google.maps.event.addListener(mapClient, 'idle', function() {
-      writeParam()
-  });
+//  newPositionEvent = google.maps.event.addListener(mapClient, 'idle', function() {
+//      writeParam()
+//  });
   
   mapClient.setCenter(queryloc);
   setMapCenter(45,11)

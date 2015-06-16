@@ -38,6 +38,8 @@ streetviewOverlay.prototype = new google.maps.OverlayView();
 
 function writeParam()
 {
+      var spherical = google.maps.geometry.spherical; 
+      var rangePoint  = spherical.computeOffset(panoClient.getPosition(), 2000, panoClient.getPov().heading); 
       var viewPar = {
       "transport":"view",
       "heading":panoClient.getPov().heading,
@@ -45,6 +47,48 @@ function writeParam()
       "zoom":panoClient.getPov().zoom,
       "lat":panoClient.getPosition().lat(),
       "lon":panoClient.getPosition().lng(),
+      "rangeLat": rangePoint.lat(),
+      "rangeLon": rangePoint.lng(),
+      "photoHeading":panoClient.getPhotographerPov().heading,
+      "panoId":panoClient.getPano()
+      };
+      window.status = JSON.stringify(viewPar);
+      document.getElementById("pov").innerHTML = JSON.stringify(viewPar) + '';
+}
+
+function positionParam()
+{
+      var spherical = google.maps.geometry.spherical; 
+      var rangePoint  = spherical.computeOffset(panoClient.getPosition(), 2000, panoClient.getPov().heading); 
+      var viewPar = {
+      "transport":"viewPosition",
+      "heading":panoClient.getPov().heading,
+      "pitch":panoClient.getPov().pitch,
+      "zoom":panoClient.getPov().zoom,
+      "lat":panoClient.getPosition().lat(),
+      "lon":panoClient.getPosition().lng(),
+      "rangeLat": rangePoint.lat(),
+      "rangeLon": rangePoint.lng(),
+      "photoHeading":panoClient.getPhotographerPov().heading,
+      "panoId":panoClient.getPano()
+      };
+      window.status = JSON.stringify(viewPar);
+      document.getElementById("pov").innerHTML = JSON.stringify(viewPar) + '';
+}
+
+function povParam()
+{
+      var spherical = google.maps.geometry.spherical; 
+      var rangePoint  = spherical.computeOffset(panoClient.getPosition(), 2000, panoClient.getPov().heading); 
+      var viewPar = {
+      "transport":"viewPov",
+      "heading":panoClient.getPov().heading,
+      "pitch":panoClient.getPov().pitch,
+      "zoom":panoClient.getPov().zoom,
+      "lat":panoClient.getPosition().lat(),
+      "lon":panoClient.getPosition().lng(),
+      "rangeLat": rangePoint.lat(),
+      "rangeLon": rangePoint.lng(),
       "photoHeading":panoClient.getPhotographerPov().heading,
       "panoId":panoClient.getPano()
       };
@@ -68,6 +112,8 @@ streetviewOverlay.prototype.onAdd = function(){
     context.lineWidth = 1;
     context.moveTo(parseInt(width_param/2), 0);
     context.lineTo(parseInt(width_param/2), parseInt(height_param));
+    context.moveTo(0,parseInt(height_param/2));
+    context.lineTo(parseInt(width_param), parseInt(height_param/2));
     context.strokeStyle = '#ff0000';
     context.stroke();
     var div = document.createElement('div');
@@ -169,16 +215,16 @@ function initialize() {
   
 
   google.maps.event.addListener(panoClient, 'links_changed', function() {
-      writeParam()
+      povParam()
   });
 
   google.maps.event.addListener(panoClient, 'position_changed', function() {
-      writeParam();
+      positionParam();
       //loadFile()
   });
 
   google.maps.event.addListener(panoClient, 'pov_changed', function() {
-      writeParam()
+      povParam()
   });
   
   panoClient.setPosition(queryloc);
