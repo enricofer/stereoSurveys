@@ -188,6 +188,7 @@ class stereoSurveys(QgsMapTool):
         #defaults
         self.actualPointDx = None
         self.actualPointSx = None
+        self.intersectionPoint = QgsPoint(0,0)
         self.actualLocDx = {"lat":0.0,"lon":0.0,"heading":0.0}
         self.actualLocSx = {"lat":0.0,"lon":0.0,"heading":0.0}
         self.pressed = None
@@ -239,11 +240,13 @@ class stereoSurveys(QgsMapTool):
         #js = "this.mapClient.setZoom(17);"
         #self.wdg.webViewPlan.page().mainFrame().evaluateJavaScript(js)
 
-    def centerControlMap(self,loc,zoom = 20):
+    def centerControlMap(self):
+        loc = self.intersectionLoc
+        locNonCal = self.intersectionLocNonCalibrated
         if self.calibrated:
-            js = "this.setCalculatedIntersection(%s, %s);" % (loc.y(),loc.x())
+            js = "this.setCalculatedIntersection(%s,%s,%s,%s);" % (loc.x(),loc.y(),locNonCal.x(),locNonCal.y())
         else:
-            js = "this.setMapCenter(%s, %s);" % (loc.y(),loc.x())
+            js = "this.setMapCenter(%s,%s);" % (loc.x(),loc.y())
         self.wdg.webViewPlan.page().mainFrame().evaluateJavaScript(js)
         #js = "this.mapClient.setZoom(17);"
         #self.wdg.webViewPlan.page().mainFrame().evaluateJavaScript(js)
@@ -271,20 +274,10 @@ class stereoSurveys(QgsMapTool):
                 self.wdg.labelPhotoHeadingSx.setText(str(self.actualLocSx['photoHeading']))
                 #self.actualPointSx = QgsPoint(float(self.actualLocSx['lon']),float(self.actualLocSx['lat']))
                 self.updateIntersection()
-                self.wdg.labelPitchSx.setText(str(self.actualLocSx['pitch']))
-                distSx = math.sqrt(self.actualPointSx.sqrDist(self.intersectionPoint))
-                heightSx = (math.tan( math.radians(self.actualLocSx['pitch']))*distSx)+float(self.wdg.googleCameraHeightSx.text())
-                self.wdg.labelDistSx.setText(str(distSx))
-                self.wdg.labelHeightSx.setText(str(heightSx))
             elif tmpLoc["transport"] == "viewPov":
                 self.actualLocSx = tmpLoc
                 self.wdg.labelHeadingSx.setText(str(self.actualLocSx['heading']))
                 self.updateIntersection()
-                self.wdg.labelPitchSx.setText(str(self.actualLocSx['pitch']))
-                distSx = math.sqrt(self.actualPointSx.sqrDist(self.intersectionPoint))
-                heightSx = (math.tan( math.radians(self.actualLocSx['pitch']))*distSx)+float(self.wdg.googleCameraHeightSx.text())
-                self.wdg.labelDistSx.setText(str(distSx))
-                self.wdg.labelHeightSx.setText(str(heightSx))
 
 
     def catchJSeventsDx(self,status):
@@ -304,22 +297,13 @@ class stereoSurveys(QgsMapTool):
                 self.wdg.labelPhotoHeadingDx.setText(str(self.actualLocDx['photoHeading']))
                 #self.actualPointDx = QgsPoint(float(self.actualLocDx['lon']),float(self.actualLocDx['lat']))
                 self.updateIntersection()
-                self.wdg.labelPitchDx.setText(str(self.actualLocDx['pitch']))
-                distDx = math.sqrt(self.actualPointDx.sqrDist(self.intersectionPoint))
-                heightDx = (math.tan( math.radians(self.actualLocDx['pitch']))*distDx)+float(self.wdg.googleCameraHeightDx.text())
-                self.wdg.labelDistDx.setText(str(distDx))
-                self.wdg.labelHeightDx.setText(str(heightDx))
             elif tmpLoc["transport"] == "viewPov":
                 self.actualLocDx = tmpLoc
                 self.wdg.labelHeadingDx.setText(str(self.actualLocDx['heading']))
                 self.updateIntersection()
-                self.wdg.labelPitchDx.setText(str(self.actualLocDx['pitch']))
-                distDx = math.sqrt(self.actualPointDx.sqrDist(self.intersectionPoint))
-                heightDx = (math.tan( math.radians(self.actualLocDx['pitch']))*distDx)+float(self.wdg.googleCameraHeightDx.text())
-                self.wdg.labelDistDx.setText(str(distDx))
-                self.wdg.labelHeightDx.setText(str(heightDx))
 
     def catchJSeventsCx(self,status):
+        print status
         try:
             tmpLoc = json.JSONDecoder().decode(status)
         except:
@@ -348,12 +332,16 @@ class stereoSurveys(QgsMapTool):
             self.wdg.labelCalibrationDx.setText("not calibrated")
             self.calibrationSx = 0
             self.calibrationDx = 0
+            js = "this.calibrated = false;this.overlay.draw();"
         else:
             self.calibrated = True
             self.calibrationSx = sx
             self.calibrationDx = sy
             self.wdg.labelCalibrationSx.setText(str(self.calibrationSx))
             self.wdg.labelCalibrationDx.setText(str(self.calibrationDx))
+            js = "this.calibrated = true;this.overlay.draw();"
+        self.wdg.webViewSx.page().mainFrame().evaluateJavaScript(js)
+        self.wdg.webViewDx.page().mainFrame().evaluateJavaScript(js)
 
 	
 
@@ -377,33 +365,19 @@ class stereoSurveys(QgsMapTool):
             self.iface.messageBar().pushMessage("Warning", "Numeric correction required", level=QgsMessageBar.WARNING , duration=1)
 
     def updateIntersection(self):
+        print self.actualPointDx,self.actualPointSx
         if self.actualPointDx and self.actualPointSx:
-            #p1x = float(self.actualLocSx['lon'])
-            #p1y = float(self.actualLocSx['lat'])
-            #p2x = float(self.actualLocDx['lon'])
-            #p2y = float(self.actualLocDx['lat'])
-            p1x = self.actualPointSx.x()
-            p1y = self.actualPointSx.y()
-            p2x = self.actualPointDx.x()
-            p2y = self.actualPointDx.y()
-            corrSx = float (self.wdg.correzioneSx.text())
-            corrDx = float (self.wdg.correzioneDx.text())
-            k1 = math.tan(math.radians(90-self.actualLocSx["heading"]+corrSx+self.calibrationSx))
-            k2 = math.tan(math.radians(90-self.actualLocDx["heading"]+corrDx+self.calibrationDx))
-            m1 = p1y - p1x*k1
-            m2 = p2y - p2x*k2
-            self.xInt = (m2-m1)/(k1-k2)
-            self.yInt = self.xInt*k1 + m1
-            self.yInt2 = self.xInt*k2 + m2
-            self.intersectionPoint = QgsPoint(self.xInt,self.yInt)
-            self.wdg.labelY.setText(str(self.yInt))
-            self.wdg.labelX.setText(str(self.xInt))
+            self.intersectionPoint = self.getIntersectionPoint(self.actualPointSx.x(),self.actualPointSx.y(),self.actualPointDx.x(),self.actualPointDx.y())
+            self.intersectionPointNonCalibrated = self.getIntersectionPoint(self.actualPointSx.x(),self.actualPointSx.y(),self.actualPointDx.x(),self.actualPointDx.y(),calibrated = None)
+            self.wdg.labelY.setText(str(self.intersectionPoint.y()))
+            self.wdg.labelX.setText(str(self.intersectionPoint.x()))
             self.intersectionLoc = self.transformToWGS84(self.intersectionPoint)
+            self.intersectionLocNonCalibrated = self.transformToWGS84(self.intersectionPointNonCalibrated)
             self.wdg.labelLat.setText(str(self.intersectionLoc.y()))
             self.wdg.labelLon.setText(str(self.intersectionLoc.x()))
             #self.intersectionLoc = self.intersectionPoint
             #self.centerControlMap(self.actualLocSx,self.actualLocDx)
-            self.centerControlMap(self.intersectionLoc)
+            self.centerControlMap()
             self.centerMapCanvasLocations()
             #calc heights
             #SX
@@ -421,9 +395,30 @@ class stereoSurveys(QgsMapTool):
             #CX
             self.wdg.labelMeanHeight.setText(str((heightDx+heightSx)/2))
             self.wdg.labelMeanHeightError.setText(str(abs(heightDx-heightSx)/2))
+            #update marks on cx map
+            #try:
+            js = "this.drawPosMarks(%s,%s,%s,%s);" % (self.actualLocSx['lon'],self.actualLocSx['lat'],self.actualLocDx['lon'],self.actualLocDx['lat'])
+            print js
+            self.wdg.webViewPlan.page().mainFrame().evaluateJavaScript(js)
+
+    def getIntersectionPoint(self,p1x,p1y,p2x,p2y,corrected = True,calibrated = True):
+        angSx = 90-self.actualLocSx["heading"]
+        angDx = 90-self.actualLocDx["heading"]
+        if corrected:
+            angSx += float (self.wdg.correzioneSx.text())
+            angDx += float (self.wdg.correzioneDx.text())
+        if calibrated:
+            angSx += float (self.calibrationSx)
+            angDx += float (self.calibrationDx)
+        k1 = math.tan(math.radians(angSx))
+        k2 = math.tan(math.radians(angDx))
+        m1 = p1y - p1x*k1
+        m2 = p2y - p2x*k2
+        xInt = (m2-m1)/(k1-k2)
+        yInt = xInt*k1 + m1
+        return QgsPoint(xInt,yInt)
 
     def centerMapCanvasLocations(self):
-        print "centerLoc"
         try:
             self.positionDx.reset()
             self.positionSx.reset()

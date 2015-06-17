@@ -32,6 +32,7 @@ var result = "null";
 var panoClient;
 var panoMap;
 var overlay;
+var calibrated = false;
 
 streetviewOverlay.prototype = new google.maps.OverlayView();
 
@@ -104,6 +105,7 @@ function streetviewOverlay (panorama) {
 
 streetviewOverlay.prototype.onAdd = function(){
     var newCanvas = document.createElement('canvas');
+    if (calibrated) {color = '#00ff00';} else {color = '#ff0000';}
     newCanvas.setAttribute("width",width_param);
     newCanvas.setAttribute("height",height_param);
     //newCanvas.setAttribute("style","z-index:100000;position:absolute;");
@@ -114,7 +116,7 @@ streetviewOverlay.prototype.onAdd = function(){
     context.lineTo(parseInt(width_param/2), parseInt(height_param));
     context.moveTo(0,parseInt(height_param/2));
     context.lineTo(parseInt(width_param), parseInt(height_param/2));
-    context.strokeStyle = '#ff0000';
+    context.strokeStyle = color;
     context.stroke();
     var div = document.createElement('div');
     div.style.borderStyle = 'none';
@@ -130,20 +132,23 @@ streetviewOverlay.prototype.onAdd = function(){
 
 
 streetviewOverlay.prototype.draw = function(){
-/*    var matches;
+    var matches;
     var markerDOM;
     var style;
     var first = true;
     var stroke = true;
     var context = this.canvas_.getContext("2d");
-    var lastx;
-    var lasty;
     
+    if (calibrated) {color = '#00ff00';} else {color = '#ff0000';}
     context.clearRect(0, 0, this.canvas_.width, this.canvas_.height);
     context.beginPath();
+    context.lineWidth = 1;
     context.moveTo(parseInt(width_param/2), 0);
     context.lineTo(parseInt(width_param/2), parseInt(height_param));
-    context.stroke();*/
+    context.moveTo(0,parseInt(height_param/2));
+    context.lineTo(parseInt(width_param), parseInt(height_param/2));
+    context.strokeStyle = color;
+    context.stroke();
 };
 
 

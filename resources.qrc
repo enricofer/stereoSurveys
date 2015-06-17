@@ -13,5 +13,7 @@
         <file>lib/viewpoint.png</file>
         <file>lib/viewpointSx.png</file>
         <file>lib/viewpointDx.png</file>
+        <file>lib/posMarker1.png</file>
+        <file>lib/posMarker2.png</file>
     </qresource>
 </RCC>

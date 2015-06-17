@@ -372,28 +372,6 @@
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
          </property>
-         <widget class="QLabel" name="label">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>150</width>
-            <height>150</height>
-           </rect>
-          </property>
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="pixmap">
-           <pixmap resource="resources.qrc">:/plugins/stereoSurveys/lib/cross.png</pixmap>
-          </property>
-         </widget>
          <widget class="QWebView" name="webViewPlan">
           <property name="geometry">
            <rect>
@@ -427,8 +405,6 @@
            </url>
           </property>
          </widget>
-         <zorder>webViewPlan</zorder>
-         <zorder>label</zorder>
         </widget>
        </item>
        <item>
@@ -549,7 +525,7 @@
             <widget class="QLabel" name="labelMeanHeight">
              <property name="minimumSize">
               <size>
-               <width>100</width>
+               <width>120</width>
                <height>0</height>
               </size>
              </property>
@@ -643,19 +619,6 @@
            </item>
           </layout>
          </item>
-         <item>
-          <spacer name="horizontalSpacer_5">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>0</width>
-             <height>0</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
         </layout>
        </item>
        <item>
@@ -707,7 +670,7 @@
          <property name="maximumSize">
           <size>
            <width>400</width>
-           <height>250</height>
+           <height>260</height>
           </size>
          </property>
          <property name="url">

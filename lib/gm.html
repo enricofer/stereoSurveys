@@ -43,6 +43,7 @@ var sxCross;
 var dxCross;
 var calculatedLoc;
 var calibratedLoc;
+var nonCalibratedLoc;
 var calibrated = false;
 var newPositionEvent;
 
@@ -65,20 +66,31 @@ var centerCrossGreenIcon = {url : 'crossMarkerG.png',
 var centerCrossRedIcon = {url : 'crossMarkerR.png',
    size: new google.maps.Size(20, 20),
   anchor:  new google.maps.Point(10,10)};
+   
+var posIcon = {url : 'posMarker1.png',
+   size: new google.maps.Size(20, 20),
+  anchor:  new google.maps.Point(10,10)};
 
 mapOverlay.prototype = new google.maps.OverlayView();
 
 function setMapCenter(lon,lat){
     calibrated = false;
+    centerCross.setIcon(centerCrossRedIcon)
     calibratedCross.setPosition(new google.maps.LatLng(0,0));
     calculatedCross.setPosition(new google.maps.LatLng(0,0));
     setCalculatedIntersection(lon,lat);
 }
 
-function setCalculatedIntersection(lon,lat){
-	calculatedLoc = new google.maps.LatLng(lon,lat);
+function setCalculatedIntersection(lon,lat,lonNC,latNC){
+    nonCalibratedLoc = new google.maps.LatLng(latNC,lonNC)
+	calculatedLoc = new google.maps.LatLng(lat,lon);
 	centerCross.setPosition(calculatedLoc);
 	mapClient.setCenter(calculatedLoc);
+}
+
+function drawPosMarks(sx,sy,dx,dy){
+    sxCross.setPosition(new google.maps.LatLng(sy,sx))
+    dxCross.setPosition(new google.maps.LatLng(dy,dx))
 }
 
 function writeParam()
@@ -96,17 +108,19 @@ function writeParam()
 }
 
 
-function acquireCalibration(){
-      
-        calibratedLoc = centerCross.getPosition();
+function acquireCalibration(acquiredLoc){
+        calibratedLoc = acquiredLoc
         calibratedCross.setPosition(calibratedLoc);
-        calculatedCross.setPosition(calculatedLoc);
-        calibrated = true
+        calculatedCross.setPosition(nonCalibratedLoc);
+        centerCross.setIcon(centerCrossGreenIcon);
+        calibrated = true;
       
       var viewPar = {
       "transport":"calibration",
       "lat":calibratedLoc.lat(),
-      "lon":calibratedLoc.lng()
+      "lon":calibratedLoc.lng(),
+      "latNC":nonCalibratedLoc.lat(),
+      "lonNC":nonCalibratedLoc.lng()
       };
       window.status = JSON.stringify(viewPar);
       document.getElementById("mapParam").innerHTML = JSON.stringify(viewPar) + '';
@@ -224,32 +238,33 @@ function initialize() {
   });
    
    google.maps.event.addListener(centerCross, 'dragend', function(){
-        acquireCalibration();
+        acquireCalibration(centerCross.getPosition());
     });
    
    calibratedCross = new google.maps.Marker({
       map: mapClient,
+      draggable:true,
       icon: centerCrossYellowIconCalibrated
   });
    
    calculatedCross = new google.maps.Marker({
       map: mapClient,
-      draggable:true,
+      draggable:false,
       icon: centerCrossYellowIconCalculated
   });
    
    google.maps.event.addListener(calibratedCross, 'dragend', function(){
-        acquireCalibration();
+        acquireCalibration(calibratedCross.getPosition());
     });
    
    sxCross = new google.maps.Marker({
       map: mapClient,
-      icon: centerCrossGreenIcon
+      icon: posIcon
   });
    
    dxCross = new google.maps.Marker({
       map: mapClient,
-      icon: centerCrossRedIcon
+      icon: posIcon
   });
 
   
