@@ -10,7 +10,7 @@
 name=stereo surveys
 qgisMinimumVersion=2.0
 description=Streetview stereo surveys
-version=0.1
+version=1.0
 author=Enrico Ferreguti
 email=enricofer@gmail.com
 
@@ -22,12 +22,12 @@ email=enricofer@gmail.com
 # changelog=
 
 # Tags are comma separated with spaces allowed
-tags=
+tags= photogrammetry, streetview, google, surveys, measurements
 
-homepage=
-tracker=
-repository=
-category=Web
+homepage=https://geogear.wordpress.com
+tracker=https://github.com/enricofer/stereoSurveys/issues
+repository=https://github.com/enricofer/stereoSurveys
+category=Vector
 icon=icon.png
 # experimental flag
 experimental=False

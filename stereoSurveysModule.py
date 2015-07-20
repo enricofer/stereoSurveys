@@ -170,7 +170,7 @@ class stereoSurveys(QgsMapTool):
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
         
-        icon_path = os.path.join(self.plugin_dir,"lib","pplane.png")
+        icon_path = os.path.join(self.plugin_dir,"lib","icoAnaglyph.png")
         self.add_action(
             icon_path,
             text=self.tr(u'Visual surveys'),
@@ -195,8 +195,13 @@ class stereoSurveys(QgsMapTool):
         self.updateCalibration(0,0)
         self.googleCameraHeight = 3
         
+        #network connections
+        self.wdg.webViewSx.page().setNetworkAccessManager(QgsNetworkAccessManager.instance())
+        self.wdg.webViewDx.page().setNetworkAccessManager(QgsNetworkAccessManager.instance())
+        self.wdg.webViewPlan.page().setNetworkAccessManager(QgsNetworkAccessManager.instance())
+        
         #signals
-        self.wdg.pushButton.clicked.connect(self.test)
+        self.wdg.pushButton.clicked.connect(self.digitize)
         self.wdg.webViewSx.page().statusBarMessage.connect(self.catchJSeventsSx)
         self.wdg.webViewDx.page().statusBarMessage.connect(self.catchJSeventsDx)
         self.wdg.webViewPlan.page().statusBarMessage.connect(self.catchJSeventsCx)
@@ -208,7 +213,7 @@ class stereoSurveys(QgsMapTool):
         #startup
         self.defaults()
 
-    def test(self):
+    def digitizeOnExistingLayer(self):
         #js = "this.setMapCenter(%s, %s);" % (45.3995002217,11.8760747755)
         #self.defaults()
         #self.centerControlMap(QgsPoint(11.8760747755,45.3995002217))
@@ -233,6 +238,38 @@ class stereoSurveys(QgsMapTool):
                 self.iface.messageBar().pushMessage("Warning", "Point layer needed to digitize position", level=QgsMessageBar.WARNING , duration=3)
         else:
             self.iface.messageBar().pushMessage("Warning", "Invalid current layer", level=QgsMessageBar.WARNING , duration=3)
+
+
+    def digitize(self):
+        surveyLayerList = QgsMapLayerRegistry.instance().mapLayersByName("stereoSurveys_objects")
+        if not surveyLayerList:
+            surveyLayer = QgsVectorLayer("Point?crs="+str(self.iface.mapCanvas().mapRenderer().destinationCrs().authid()), "stereoSurveys_objects", "memory")
+
+            surveyLayer.startEditing()
+            surveyLayer.addAttribute(QgsField("objName",QVariant.String))
+            surveyLayer.addAttribute(QgsField("lon",QVariant.Double))
+            surveyLayer.addAttribute(QgsField("lat",QVariant.Double))
+            surveyLayer.addAttribute(QgsField("x",QVariant.Double))
+            surveyLayer.addAttribute(QgsField("y",QVariant.Double))
+            surveyLayer.addAttribute(QgsField("height",QVariant.Double))
+            surveyLayer.addAttribute(QgsField("h_error",QVariant.Double))
+            surveyLayer.commitChanges()
+            surveyLayer.loadNamedStyle(os.path.join(self.plugin_dir,"lib","stereoSurveys.qml"))
+            QgsMapLayerRegistry.instance().addMapLayer(surveyLayer)
+        else:
+            surveyLayer = surveyLayerList[0]
+        
+        newgeom = QgsGeometry.fromPoint(self.transformToLayerSRS(surveyLayer,self.intersectionPoint))
+        #print newgeom.exportToWkt()
+        newfeat = QgsFeature()
+        newfeat.setGeometry(newgeom)
+        newfeat.setAttributes([self.wdg.objNameSlot.text(),self.intersectionLoc.x(),self.intersectionLoc.y(),self.intersectionPoint.x(),self.intersectionPoint.y(),float(self.wdg.labelMeanHeight.text()),float(self.wdg.labelMeanHeightError.text())])
+        surveyLayer.startEditing()
+        surveyLayer.addFeatures([newfeat])
+        surveyLayer.commitChanges()
+        surveyLayer.setSelectedFeatures ([])
+        self.iface.mapCanvas().setCenter(self.intersectionPoint)
+
 
     def ex_centerControlMap(self,loc,zoom = 20):
         js = "this.mapClient.panTo(new google.maps.LatLng(%s, %s));" % (loc.y(),loc.x())
@@ -321,9 +358,6 @@ class stereoSurveys(QgsMapTool):
 
         self.updateCalibration(self.calibrationSx,self.calibrationDx)
 
-                #print "ERROR:",deltaX,deltaY
-                #print "NEWHEADINGS:",newHeadingSx,newHeadingDx
-                #print "CALIBRATION:",self.actualLocSx['heading']-newHeadingSx,self.actualLocDx['heading']-newHeadingDx
 
     def updateCalibration(self,sx,sy):
         if sx == 0 and sy == 0:
@@ -487,12 +521,17 @@ class stereoSurveys(QgsMapTool):
             pass
 
     def defaults(self):
-        swUrlSx = "qrc:///plugins/stereoSurveys/lib/sv.html?lat=45.3993885731&long=11.875303141&width=400&height=260&heading=131"
-        swUrlDx = "qrc:///plugins/stereoSurveys/lib/sv.html?lat=45.399895797&long=11.8765856845&width=400&height=260&heading=194"
+        #◙swUrlDx = "qrc:///plugins/stereoSurveys/lib/sv.html?lat=45.3993885731&long=11.875303141&width=400&height=260&heading=131"
+        #swUrlSx = "qrc:///plugins/stereoSurveys/lib/sv.html?lat=45.399977&long=11.876261&width=400&height=260&heading=194"
+        #mapPlanUrl = "qrc:///plugins/stereoSurveys/lib/gm.html?width=150&height=150&zoom=20"
+        swUrlDx = "qrc:///plugins/stereoSurveys/lib/sv.html"
+        swUrlSx = "qrc:///plugins/stereoSurveys/lib/sv.html"
         mapPlanUrl = "qrc:///plugins/stereoSurveys/lib/gm.html?width=150&height=150&zoom=20"
         self.wdg.webViewSx.load(QUrl(swUrlSx))
         self.wdg.webViewDx.load(QUrl(swUrlDx))
         self.wdg.webViewPlan.load(QUrl(mapPlanUrl))
+        self.wdg.correzioneDx.setHidden(True)
+        self.wdg.correzioneSx.setHidden(True)
         self.calibrated = None
 
     def canvasPressEvent(self, event):

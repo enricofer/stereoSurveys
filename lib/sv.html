@@ -33,9 +33,19 @@ var panoClient;
 var panoMap;
 var overlay;
 var calibrated = false;
+var markers = [];
 
 streetviewOverlay.prototype = new google.maps.OverlayView();
 
+function newMarker(lat,lon)
+{ 
+    var position = new google.maps.LatLng(lat,lon);
+    var marker = new google.maps.Marker({
+        position: latLng,
+        map: panoClient
+    });
+    l = markers.push(marker);
+}
 
 function writeParam()
 {
