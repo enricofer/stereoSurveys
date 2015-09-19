@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1355</width>
-    <height>305</height>
+    <height>289</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -48,6 +48,26 @@
             </size>
            </property>
           </spacer>
+         </item>
+         <item>
+          <widget class="QToolButton" name="acquireButtonSx">
+           <property name="toolTip">
+            <string>Acquire position from go2streetview</string>
+           </property>
+           <property name="text">
+            <string>...</string>
+           </property>
+           <property name="icon">
+            <iconset resource="resources.qrc">
+             <normaloff>:/plugins/stereoSurveys/lib/icoStreetview.png</normaloff>:/plugins/stereoSurveys/lib/icoStreetview.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QPushButton" name="pushButtonSx">
@@ -582,7 +602,7 @@
         <number>0</number>
        </property>
        <item alignment="Qt::AlignTop">
-        <widget class="QWebView" name="webViewSx" native="true">
+        <widget class="QWebView" name="webViewSx">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -601,7 +621,7 @@
            <height>260</height>
           </size>
          </property>
-         <property name="url" stdset="0">
+         <property name="url">
           <url>
            <string>about:blank</string>
           </url>
@@ -635,7 +655,7 @@
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
          </property>
-         <widget class="QWebView" name="webViewPlan" native="true">
+         <widget class="QWebView" name="webViewPlan">
           <property name="geometry">
            <rect>
             <x>0</x>
@@ -662,7 +682,7 @@
             <height>150</height>
            </size>
           </property>
-          <property name="url" stdset="0">
+          <property name="url">
            <url>
             <string>about:blank</string>
            </url>
@@ -956,7 +976,7 @@
         <number>0</number>
        </property>
        <item alignment="Qt::AlignTop">
-        <widget class="QWebView" name="webViewDx" native="true">
+        <widget class="QWebView" name="webViewDx">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -975,7 +995,7 @@
            <height>260</height>
           </size>
          </property>
-         <property name="url" stdset="0">
+         <property name="url">
           <url>
            <string>about:blank</string>
           </url>
@@ -1017,6 +1037,26 @@
            <property name="icon">
             <iconset resource="resources.qrc">
              <normaloff>:/plugins/stereoSurveys/lib/viewpointDx.png</normaloff>:/plugins/stereoSurveys/lib/viewpointDx.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="acquireButtonDx">
+           <property name="toolTip">
+            <string>Acquire position from go2streetview</string>
+           </property>
+           <property name="text">
+            <string>...</string>
+           </property>
+           <property name="icon">
+            <iconset resource="resources.qrc">
+             <normaloff>:/plugins/stereoSurveys/lib/icoStreetview.png</normaloff>:/plugins/stereoSurveys/lib/icoStreetview.png</iconset>
            </property>
            <property name="iconSize">
             <size>

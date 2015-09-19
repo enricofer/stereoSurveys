@@ -15,5 +15,6 @@
         <file>lib/viewpointDx.png</file>
         <file>lib/posMarker1.png</file>
         <file>lib/posMarker2.png</file>
+        <file>lib/icoStreetview.png</file>
     </qresource>
 </RCC>

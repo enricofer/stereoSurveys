@@ -1,0 +1,10 @@
+{
+   "infoBoxTemplate": "", 
+   "infoLayerEnabled": false, 
+   "infoField": "[%  \"UN_VOL_AV\"  %]", 
+   "mapCommandsEnabled": true, 
+   "infoBoxEnabled": true, 
+   "iconPath": "", 
+   "infoLayer": "vol", 
+   "distanceBuffer": "40"
+}

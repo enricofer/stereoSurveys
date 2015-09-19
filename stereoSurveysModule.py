@@ -27,6 +27,7 @@ from PyQt4.QtWebKit import *
 from qgis.core import *
 from qgis.utils import *
 from qgis.gui import *
+from qgis.utils import plugins
 # Initialize Qt resources from file resources.py
 import resources_rc
 # Import the code for the dialog
@@ -209,6 +210,9 @@ class stereoSurveys(QgsMapTool):
         self.wdg.correzioneDx.textEdited.connect(self.correggi)
         self.wdg.pushButtonDx.clicked.connect(self.setViewDx)
         self.wdg.pushButtonSx.clicked.connect(self.setViewSx)
+        self.wdg.acquireButtonDx.clicked.connect(self.acquireDx)
+        self.wdg.acquireButtonSx.clicked.connect(self.acquireSx)
+
 
         #startup
         self.defaults()
@@ -595,6 +599,27 @@ class stereoSurveys(QgsMapTool):
             self.gswUrl = "qrc:///plugins/stereoSurveys/lib/sv.html?lat="+str(self.pointWgs84.y())+"&long="+str(self.pointWgs84.x())+"&width="+str(self.viewWidth)+"&height="+str(self.viewHeight)+"&heading="+str(self.heading)
             print "sx",self.gswUrl
             self.wdg.webViewSx.load(QUrl(self.gswUrl))
+
+    def acquireDx(self):
+        if 'go2streetview' in plugins:
+            if plugins['go2streetview'].apdockwidget.isVisible() and plugins['go2streetview'].actualPOV:
+                self.viewWidth = self.dlg.webViewDx.width()
+                self.viewHeight = self.dlg.webViewDx.height()
+                actualG2SV = plugins['go2streetview'].actualPOV
+                self.gswUrl = "qrc:///plugins/stereoSurveys/lib/sv.html?lat="+str(actualG2SV['lat'])+"&long="+str(actualG2SV['lon'])+"&width="+str(self.viewWidth)+"&height="+str(self.viewHeight)+"&heading="+str(actualG2SV['heading'])
+                print "dx",self.gswUrl
+                self.wdg.webViewDx.load(QUrl(self.gswUrl))
+
+    def acquireSx(self):
+        if 'go2streetview' in plugins:
+            if plugins['go2streetview'].apdockwidget.isVisible() and plugins['go2streetview'].actualPOV:
+                self.viewWidth = self.dlg.webViewSx.width()
+                self.viewHeight = self.dlg.webViewSx.height()
+                actualG2SV = plugins['go2streetview'].actualPOV
+                self.gswUrl = "qrc:///plugins/stereoSurveys/lib/sv.html?lat="+str(actualG2SV['lat'])+"&long="+str(actualG2SV['lon'])+"&width="+str(self.viewWidth)+"&height="+str(self.viewHeight)+"&heading="+str(actualG2SV['heading'])
+                print "sx",self.gswUrl
+                self.wdg.webViewSx.load(QUrl(self.gswUrl))
+
 
     def setViewDx(self):
         gsvMessage="Click on map and drag the cursor to the desired direction to display Google Street View in right panel"
