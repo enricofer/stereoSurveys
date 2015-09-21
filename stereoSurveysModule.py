@@ -304,7 +304,7 @@ class stereoSurveys(QgsMapTool):
         except:
             tmpLoc = None
         if tmpLoc:
-            print "SX",tmpLoc
+            #print "SX",tmpLoc
             if tmpLoc["transport"] == "viewPosition":
                 self.updateCalibration(0,0)
                 self.actualLocSx = tmpLoc
@@ -327,7 +327,7 @@ class stereoSurveys(QgsMapTool):
         except:
             tmpLoc = None
         if tmpLoc:
-            print "DX",tmpLoc
+            #print "DX",tmpLoc
             if tmpLoc["transport"] == "viewPosition":
                 self.updateCalibration(0,0)
                 self.actualLocDx = tmpLoc
@@ -350,7 +350,7 @@ class stereoSurveys(QgsMapTool):
             print "errore finestra centrale"
             tmpLoc = None
         if tmpLoc:
-            print "CX",tmpLoc
+            #print "CX",tmpLoc
             if tmpLoc["transport"] == "calibration":
                 correctionPoint = self.transformToCurrentSRS(QgsPoint(float(tmpLoc['lon']),float(tmpLoc['lat'])))
                 newHeadingSx = self.getTrueHeading(self.actualPointSx,correctionPoint)
@@ -405,7 +405,7 @@ class stereoSurveys(QgsMapTool):
         if iface.mapCanvas().mapRenderer().destinationCrs().geographicFlag():
             iface.messageBar().pushMessage("Error", "The current CRS is not projected: can't compute view intersections", level=QgsMessageBar.CRITICAL, duration=1)
             return
-        if self.actualPointDx and self.actualPointSx:
+        if self.actualPointDx and self.actualPointSx and not self.actualPointDx.compare(self.actualPointSx):
             self.intersectionPoint = self.getIntersectionPoint(self.actualPointSx.x(),self.actualPointSx.y(),self.actualPointDx.x(),self.actualPointDx.y())
             self.intersectionPointNonCalibrated = self.getIntersectionPoint(self.actualPointSx.x(),self.actualPointSx.y(),self.actualPointDx.x(),self.actualPointDx.y(),calibrated = None)
             self.wdg.labelY.setText(str(self.intersectionPoint.y()))

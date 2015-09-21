@@ -50,12 +50,30 @@
           </spacer>
          </item>
          <item>
-          <widget class="QToolButton" name="acquireButtonSx">
+          <widget class="QPushButton" name="acquireButtonSx">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>30</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>30</width>
+             <height>30</height>
+            </size>
+           </property>
            <property name="toolTip">
             <string>Acquire position from go2streetview</string>
            </property>
            <property name="text">
-            <string>...</string>
+            <string/>
            </property>
            <property name="icon">
             <iconset resource="resources.qrc">
@@ -1047,12 +1065,24 @@
           </widget>
          </item>
          <item>
-          <widget class="QToolButton" name="acquireButtonDx">
+          <widget class="QPushButton" name="acquireButtonDx">
+           <property name="minimumSize">
+            <size>
+             <width>30</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>30</width>
+             <height>30</height>
+            </size>
+           </property>
            <property name="toolTip">
             <string>Acquire position from go2streetview</string>
            </property>
            <property name="text">
-            <string>...</string>
+            <string/>
            </property>
            <property name="icon">
             <iconset resource="resources.qrc">

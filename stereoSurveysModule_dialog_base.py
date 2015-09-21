@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'C:\Users\DEMO\Dropbox\dev\stereoSurveys\stereoSurveysModule_dialog_base.ui'
 #
-# Created: Sat Sep 19 12:54:47 2015
+# Created: Mon Sep 21 16:17:51 2015
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -40,7 +40,15 @@ class Ui_stereoSurveysDialogBase(object):
         self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
         spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem1)
-        self.acquireButtonSx = QtGui.QToolButton(stereoSurveysDialogBase)
+        self.acquireButtonSx = QtGui.QPushButton(stereoSurveysDialogBase)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.acquireButtonSx.sizePolicy().hasHeightForWidth())
+        self.acquireButtonSx.setSizePolicy(sizePolicy)
+        self.acquireButtonSx.setMinimumSize(QtCore.QSize(30, 30))
+        self.acquireButtonSx.setMaximumSize(QtCore.QSize(30, 30))
+        self.acquireButtonSx.setText(_fromUtf8(""))
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/stereoSurveys/lib/icoStreetview.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.acquireButtonSx.setIcon(icon)
@@ -378,7 +386,10 @@ class Ui_stereoSurveysDialogBase(object):
         self.pushButtonDx.setIconSize(QtCore.QSize(24, 24))
         self.pushButtonDx.setObjectName(_fromUtf8("pushButtonDx"))
         self.horizontalLayout_3.addWidget(self.pushButtonDx)
-        self.acquireButtonDx = QtGui.QToolButton(stereoSurveysDialogBase)
+        self.acquireButtonDx = QtGui.QPushButton(stereoSurveysDialogBase)
+        self.acquireButtonDx.setMinimumSize(QtCore.QSize(30, 30))
+        self.acquireButtonDx.setMaximumSize(QtCore.QSize(30, 30))
+        self.acquireButtonDx.setText(_fromUtf8(""))
         self.acquireButtonDx.setIcon(icon)
         self.acquireButtonDx.setIconSize(QtCore.QSize(24, 24))
         self.acquireButtonDx.setObjectName(_fromUtf8("acquireButtonDx"))
@@ -534,7 +545,6 @@ class Ui_stereoSurveysDialogBase(object):
     def retranslateUi(self, stereoSurveysDialogBase):
         stereoSurveysDialogBase.setWindowTitle(_translate("stereoSurveysDialogBase", "visual surveys", None))
         self.acquireButtonSx.setToolTip(_translate("stereoSurveysDialogBase", "Acquire position from go2streetview", None))
-        self.acquireButtonSx.setText(_translate("stereoSurveysDialogBase", "...", None))
         self.label_16.setText(_translate("stereoSurveysDialogBase", "Left", None))
         self.label_8.setText(_translate("stereoSurveysDialogBase", "Lon:", None))
         self.label_9.setText(_translate("stereoSurveysDialogBase", "Lat:", None))
@@ -591,7 +601,6 @@ class Ui_stereoSurveysDialogBase(object):
         self.pushButton.setText(_translate("stereoSurveysDialogBase", "Digitize", None))
         self.pushButtonDx.setToolTip(_translate("stereoSurveysDialogBase", "locate right panorama on map", None))
         self.acquireButtonDx.setToolTip(_translate("stereoSurveysDialogBase", "Acquire position from go2streetview", None))
-        self.acquireButtonDx.setText(_translate("stereoSurveysDialogBase", "...", None))
         self.label_19.setText(_translate("stereoSurveysDialogBase", "Right", None))
         self.label_20.setText(_translate("stereoSurveysDialogBase", "Lon:", None))
         self.label_21.setText(_translate("stereoSurveysDialogBase", "Lat:", None))
