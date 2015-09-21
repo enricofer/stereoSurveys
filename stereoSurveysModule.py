@@ -344,7 +344,6 @@ class stereoSurveys(QgsMapTool):
                 self.updateIntersection()
 
     def catchJSeventsCx(self,status):
-        print status
         try:
             tmpLoc = json.JSONDecoder().decode(status)
         except:
@@ -403,7 +402,9 @@ class stereoSurveys(QgsMapTool):
             self.iface.messageBar().pushMessage("Warning", "Numeric correction required", level=QgsMessageBar.WARNING , duration=1)
 
     def updateIntersection(self):
-        print self.actualPointDx,self.actualPointSx
+        if iface.mapCanvas().mapRenderer().destinationCrs().geographicFlag():
+            iface.messageBar().pushMessage("Error", "The current CRS is not projected: can't compute view intersections", level=QgsMessageBar.CRITICAL, duration=1)
+            return
         if self.actualPointDx and self.actualPointSx:
             self.intersectionPoint = self.getIntersectionPoint(self.actualPointSx.x(),self.actualPointSx.y(),self.actualPointDx.x(),self.actualPointDx.y())
             self.intersectionPointNonCalibrated = self.getIntersectionPoint(self.actualPointSx.x(),self.actualPointSx.y(),self.actualPointDx.x(),self.actualPointDx.y(),calibrated = None)
@@ -436,7 +437,6 @@ class stereoSurveys(QgsMapTool):
             #update marks on cx map
             #try:
             js = "this.drawPosMarks(%s,%s,%s,%s);" % (self.actualLocSx['lon'],self.actualLocSx['lat'],self.actualLocDx['lon'],self.actualLocDx['lat'])
-            print js
             self.wdg.webViewPlan.page().mainFrame().evaluateJavaScript(js)
 
     def getIntersectionPoint(self,p1x,p1y,p2x,p2y,corrected = True,calibrated = True):
@@ -607,7 +607,6 @@ class stereoSurveys(QgsMapTool):
                 self.viewHeight = self.dlg.webViewDx.height()
                 actualG2SV = plugins['go2streetview'].actualPOV
                 self.gswUrl = "qrc:///plugins/stereoSurveys/lib/sv.html?lat="+str(actualG2SV['lat'])+"&long="+str(actualG2SV['lon'])+"&width="+str(self.viewWidth)+"&height="+str(self.viewHeight)+"&heading="+str(actualG2SV['heading'])
-                print "dx",self.gswUrl
                 self.wdg.webViewDx.load(QUrl(self.gswUrl))
 
     def acquireSx(self):
@@ -617,7 +616,6 @@ class stereoSurveys(QgsMapTool):
                 self.viewHeight = self.dlg.webViewSx.height()
                 actualG2SV = plugins['go2streetview'].actualPOV
                 self.gswUrl = "qrc:///plugins/stereoSurveys/lib/sv.html?lat="+str(actualG2SV['lat'])+"&long="+str(actualG2SV['lon'])+"&width="+str(self.viewWidth)+"&height="+str(self.viewHeight)+"&heading="+str(actualG2SV['heading'])
-                print "sx",self.gswUrl
                 self.wdg.webViewSx.load(QUrl(self.gswUrl))
 
 
